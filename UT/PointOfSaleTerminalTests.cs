@@ -58,21 +58,28 @@ namespace UT
         public void GetCorrectPriceWhenSameProductIsScanned()
         {
             "CCCCCCC".ToCharArray().ToList().ForEach(p => _terminal.Scan(p.ToString()));
-            Assert.AreEqual(_terminal.Checkout(), 6);
+            Assert.AreEqual(6, _terminal.Checkout());
         }
         
         [Test]
         public void GetCorrectPriceWhenAllDifferentIsScanned()
         {
             "ABCD".ToCharArray().ToList().ForEach(p => _terminal.Scan(p.ToString()));
-            Assert.AreEqual(_terminal.Checkout(), 7.25);
+            Assert.AreEqual(7.25, _terminal.Checkout());
         }
         
         [Test]
         public void GetCorrectPriceWhenMixedItemsAreScanned()
         {
             "ABCDABA".ToCharArray().ToList().ForEach(p => _terminal.Scan(p.ToString()));
-            Assert.AreEqual(_terminal.Checkout(), 13.25);
+            Assert.AreEqual(13.25, _terminal.Checkout());
+        }
+
+        [Test]
+        public void GetCorrectPriceWhenNotMatchingItemsAreScanned()
+        {
+            "ABEABA".ToCharArray().ToList().ForEach(p => _terminal.Scan(p.ToString()));
+            Assert.AreEqual(11.5, _terminal.Checkout());
         }
     }
 }
