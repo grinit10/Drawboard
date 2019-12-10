@@ -27,20 +27,20 @@ namespace BL
         public void Scan(string productCode)
         {
             var selectedProduct = Shop.Products.Find(p => p.ProductCode == productCode);
-            if (selectedProduct != null)
+            if (selectedProduct == null) return;
+            
+            var bagItem = _bag.ToList().FirstOrDefault(b => b.Item1 == productCode);
+            
+            if (bagItem == null)
+                _bag.Add(new Tuple<string, int, double>(productCode, 1, selectedProduct.UnitPrice));
+            else
             {
-                var bagItem = _bag.ToList().FirstOrDefault(b => b.Item1 == productCode);
-                if (bagItem == null)
-                    _bag.Add(new Tuple<string, int, double>(productCode, 1, selectedProduct.UnitPrice));
-                else
-                {
-                    var productCount = bagItem.Item2 + 1;
-                    var productPrice = selectedProduct.Pack != null ? Convert.ToInt32(productCount / selectedProduct.Pack.Count) * selectedProduct.Pack.PackPrice +
-                                       (productCount % selectedProduct.Pack.Count) * selectedProduct.UnitPrice : productCount * selectedProduct.UnitPrice;
-                    var newTuple = new Tuple<string, int, double>(bagItem.Item1, productCount, productPrice);
-                    _bag.Remove(bagItem);
-                    _bag.Add(newTuple);
-                }
+                var productCount = bagItem.Item2 + 1;
+                var productPrice = selectedProduct.Pack != null ? Convert.ToInt32(productCount / selectedProduct.Pack.Count) * selectedProduct.Pack.PackPrice +
+                                                                  (productCount % selectedProduct.Pack.Count) * selectedProduct.UnitPrice : productCount * selectedProduct.UnitPrice;
+                var newTuple = new Tuple<string, int, double>(bagItem.Item1, productCount, productPrice);
+                _bag.Remove(bagItem);
+                _bag.Add(newTuple);
             }
         }
     }
